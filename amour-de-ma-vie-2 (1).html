@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>L'amour de ma vie</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden;color:#ffe6f2;font-family:Georgia,'Times New Roman',serif;background:radial-gradient(ellipse at center,#1a0536 0%,#07001a 60%,#000 100%)}
+canvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none}
+.centre{position:fixed;left:0;right:0;text-align:center;padding:0 7vw}
+.chute{position:fixed;top:-50px;pointer-events:none;animation:tomber linear forwards}
+@keyframes tomber{to{transform:translateY(115vh) rotate(360deg)}}
+#titre{top:12%;font-size:clamp(28px,8.5vw,56px);letter-spacing:.06em;text-shadow:0 0 20px #ff7eb6,0 0 40px #b9a1ff;transform:translateX(-120vw);transition:transform 2.5s ease-out,opacity 2s}
+#sous{top:24%;font-size:clamp(16px,5vw,26px);color:#ffd6e8;transform:translateY(60vh);opacity:0;transition:transform 2.5s ease-out,opacity 2s}
+#titre.on,#sous.on{transform:none;opacity:1}
+#sous.on{opacity:.9}
+body.univers #titre,body.univers #sous{opacity:0}
+#texte{top:42%;transform:translateY(-50%);font-size:clamp(18px,5vw,28px);line-height:1.7;text-shadow:0 0 14px #ff7eb6;opacity:0;transition:opacity .8s}
+#cupidon,#fleche,#cible{position:fixed;top:56%;font-size:64px;opacity:0;transition:opacity 1s}
+#cupidon{left:6vw}
+#fleche{left:24vw;font-size:44px;top:58%;color:#ffd27e;transition:transform 1s ease-in,opacity 1s}
+#cible{right:8vw}
+#cupidon.on,#cible.on,#fleche.on{opacity:1}
+#fleche.tir{transform:translateX(52vw)}
+.mini{position:fixed;font-size:26px;pointer-events:none;animation:eclat 1.5s ease-out forwards}
+@keyframes eclat{from{opacity:1;transform:translate(-50%,-50%) scale(.4)}to{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(1.6)}}
+#coeur{position:fixed;left:50%;top:45%;width:min(70vw,320px);transform:translate(-50%,-50%);opacity:0;transition:opacity 1s;overflow:visible}
+#coeur.on{opacity:1}
+#cp{fill:none;stroke:#ff7eb6;stroke-width:2.5;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1;filter:drop-shadow(0 0 6px #ff7eb6)}
+#pt{fill:#fff;filter:drop-shadow(0 0 6px #fff)}
+#coeur.bat{animation:bat .8s infinite}
+#coeur.bat #cp{fill:rgba(255,126,182,.35)}
+@keyframes bat{0%,100%{transform:translate(-50%,-50%) scale(1)}30%{transform:translate(-50%,-50%) scale(1.15)}60%{transform:translate(-50%,-50%) scale(1.02)}}
+#lettres{position:fixed;left:0;right:0;top:48%;display:none;justify-content:center;gap:1.5vw;perspective:600px}
+#lettres.on{display:flex}
+.lettre{font-size:clamp(26px,9vw,58px);font-weight:bold;color:#fff;text-shadow:0 0 12px #ff7eb6,0 0 30px #b9a1ff;animation-duration:1.6s;animation-fill-mode:both}
+.a1{animation-name:l1}.a2{animation-name:l2}.a3{animation-name:l3}.a4{animation-name:l4}.a5{animation-name:l5}.a6{animation-name:l6}.a7{animation-name:l7}.a8{animation-name:l8}.a9{animation-name:l9}
+@keyframes l1{from{opacity:0;transform:translateY(-140px)}60%{opacity:1;transform:translateY(14px)}}
+@keyframes l2{from{opacity:0;transform:rotate(-540deg) scale(.2)}}
+@keyframes l3{from{opacity:0;transform:scale(6)}}
+@keyframes l4{from{opacity:0;transform:translateX(-100vw)}}
+@keyframes l5{from{opacity:0;transform:translateX(100vw)}}
+@keyframes l6{from{opacity:0;transform:rotateY(180deg) scale(.3)}}
+@keyframes l7{from{opacity:0;filter:blur(25px);transform:scale(2)}}
+@keyframes l8{from{opacity:0;transform:translateY(140px) rotate(25deg)}}
+@keyframes l9{from{opacity:0;transform:scale(0)}50%{opacity:1;transform:scale(1.7)}}
+.lum{position:fixed;top:42%;width:26px;height:26px;border-radius:50%;transform:translate(-50%,-50%);opacity:0;transition:left 8s ease-in-out,opacity 2s;animation:pulse 2.5s infinite alternate}
+#lum1{left:-5%;background:#fff;box-shadow:0 0 20px 8px #ff7eb6,0 0 60px 25px rgba(255,126,182,.6),0 0 120px 50px rgba(255,126,182,.3)}
+#lum2{left:105%;background:#fff6dd;box-shadow:0 0 20px 8px #ffd27e,0 0 60px 25px rgba(255,210,126,.6),0 0 120px 50px rgba(185,161,255,.35)}
+body.univers .lum{opacity:1}
+body.univers #lum1{left:41%}
+body.univers #lum2{left:59%}
+@keyframes pulse{from{transform:translate(-50%,-50%) scale(1)}to{transform:translate(-50%,-50%) scale(1.3)}}
+#infini{position:fixed;left:50%;top:42%;width:min(72vw,420px);transform:translate(-50%,-50%);overflow:visible}
+#ip{fill:none;stroke:#ffb3d9;stroke-width:2.5;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1;filter:drop-shadow(0 0 6px #ff7eb6) drop-shadow(0 0 14px #b9a1ff)}
+#infini.trace #ip{transition:stroke-dashoffset 7s ease-in-out;stroke-dashoffset:0}
+#poeme{top:60%;font-size:clamp(16px,4.6vw,24px);line-height:1.75;text-shadow:0 0 12px rgba(255,126,182,.7);transition:opacity 1.5s}
+#poeme.sortie{opacity:0}
+#poeme p{margin:.15em 0;opacity:0;transform:translateY(10px);transition:opacity 2s,transform 2s}
+#poeme p.on{opacity:1;transform:none}
+#poeme p.fin{font-size:1.25em;color:#fff;font-style:italic;margin-top:.6em}
+#accueil{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;padding:0 8vw;text-align:center;transition:opacity 1.5s}
+#accueil.off{opacity:0;pointer-events:none}
+#accueil h2{font-size:clamp(22px,7vw,40px);font-weight:normal;line-height:1.4;text-shadow:0 0 18px #ff7eb6;animation:pulse2 3s infinite alternate}
+#accueil small{opacity:.75;font-size:clamp(14px,4vw,18px)}
+#go{font:inherit;font-size:clamp(18px,5.5vw,26px);color:#fff;border:none;border-radius:50px;padding:16px 34px;background:linear-gradient(135deg,#ff7eb6,#b9a1ff);box-shadow:0 0 25px #ff7eb6,0 0 60px rgba(185,161,255,.6);animation:bat2 1.2s infinite}
+@keyframes bat2{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+@keyframes pulse2{from{opacity:.75}to{opacity:1}}
+.monte{position:fixed;bottom:-50px;pointer-events:none;animation:monte linear forwards}
+@keyframes monte{to{transform:translateY(-115vh) translateX(var(--dx)) rotate(40deg);opacity:0}}
+</style>
+</head>
+<body>
+<canvas id="fond"></canvas>
+<canvas id="filantes"></canvas>
+<div id="lum1" class="lum"></div>
+<div id="lum2" class="lum"></div>
+<svg id="infini" viewBox="0 0 200 100"><path id="ip" pathLength="1" d="M100 50 C130 10,180 10,180 50 C180 90,130 90,100 50 C70 10,20 10,20 50 C20 90,70 90,100 50Z"/></svg>
+<div id="titre" class="centre">L'amour de ma vie</div>
+<div id="sous" class="centre">Pour Elischama 💖</div>
+<div id="texte" class="centre"></div>
+<div id="cupidon">👼</div>
+<div id="fleche">➳</div>
+<div id="cible">💗</div>
+<svg id="coeur" viewBox="0 0 100 90"><path id="cp" pathLength="1" d="M50 85 C10 55 0 30 15 15 C30 0 48 8 50 22 C52 8 70 0 85 15 C100 30 90 55 50 85Z"/><circle id="pt" r="2.8" cx="50" cy="85"/></svg>
+<div id="lettres"></div>
+<div id="poeme" class="centre"></div>
+<div id="accueil"><h2>Il y a quelque chose<br>que j'ai fait rien que pour toi…</h2><button id="go">Clique ici mon amour 💖</button><small>Appuie doucement… c'est pour toi, Elischama 💕</small></div>
+<script>
+const $=id=>document.getElementById(id);
+const dodo=ms=>new Promise(r=>setTimeout(r,ms));
+const rnd=(a,b)=>a+Math.random()*(b-a);
+const cols=['#ffd6e8','#ff7eb6','#b9a1ff','#ffffff','#ffe6a8'];
+const fond=$('fond'),cf=fond.getContext('2d'),fil=$('filantes'),ck=fil.getContext('2d');
+let W,H;
+function taille(){W=fond.width=fil.width=innerWidth;H=fond.height=fil.height=innerHeight}
+taille();addEventListener('resize',taille);
+const etoiles=Array.from({length:170},()=>({x:Math.random(),y:Math.random(),t:rnd(.4,1.8),p:rnd(0,6),c:cols[Math.floor(rnd(0,5))],v:rnd(.00005,.0002)}));
+const galax=Array.from({length:1100},(_,i)=>{const r=Math.pow(Math.random(),.7);return{r,a:r*9+(i%3)*2.094+rnd(-.25,.25),t:rnd(.3,1.9),c:cols[Math.floor(rnd(0,5))],p:rnd(0,6)}});
+let galaxieA=0,rot=0,filantesOn=false,filantes=[],feux=[];
+(function boucle(){
+  cf.clearRect(0,0,W,H);
+  const now=Date.now();
+  for(const s of etoiles){
+    s.y-=s.v;if(s.y<0)s.y=1;
+    cf.globalAlpha=.4+.6*Math.abs(Math.sin(now/700+s.p));
+    cf.fillStyle=s.c;cf.beginPath();cf.arc(s.x*W,s.y*H,s.t,0,7);cf.fill();
+  }
+  if(galaxieA>0){
+    rot+=.0015;
+    const cx=W/2,cy=H*.42,R=Math.min(W*1.1,H)*.5;
+    for(const s of galax){
+      const a=s.a+rot;
+      cf.globalAlpha=galaxieA*(.45+.55*Math.sin(now/600+s.p));
+      cf.fillStyle=s.c;cf.beginPath();
+      cf.arc(cx+Math.cos(a)*s.r*R,cy+Math.sin(a)*s.r*R*.55,s.t,0,7);cf.fill();
+    }
+  }
+  cf.globalAlpha=1;
+  ck.clearRect(0,0,W,H);
+  for(const s of filantes){
+    const bx=s.x-s.vx*9,by=s.y-s.vy*9;
+    const d=ck.createLinearGradient(s.x,s.y,bx,by);
+    d.addColorStop(0,`rgba(255,255,255,${s.vie})`);d.addColorStop(1,'rgba(255,126,182,0)');
+    ck.strokeStyle=d;ck.lineWidth=2.2;ck.lineCap='round';
+    ck.beginPath();ck.moveTo(s.x,s.y);ck.lineTo(bx,by);ck.stroke();
+    ck.fillStyle=`rgba(255,255,255,${s.vie})`;ck.beginPath();ck.arc(s.x,s.y,2.2,0,7);ck.fill();
+    s.x+=s.vx;s.y+=s.vy;s.vie-=.011;
+  }
+  filantes=filantes.filter(s=>s.vie>0);
+  for(const p of feux){p.x+=p.vx;p.y+=p.vy;p.vy+=.05;p.vie-=.012;ck.globalAlpha=Math.max(p.vie,0);ck.fillStyle=p.c;ck.beginPath();ck.arc(p.x,p.y,2.4,0,7);ck.fill();}
+  ck.globalAlpha=1;feux=feux.filter(p=>p.vie>0);
+  requestAnimationFrame(boucle);
+})();
+setInterval(()=>{
+  if(!filantesOn)return;
+  const n=()=>filantes.push({x:W*rnd(.3,1),y:rnd(0,H*.45),vx:-rnd(6,12),vy:rnd(3,7),vie:1});
+  n();if(Math.random()<.4)n();
+},1100);
+function pluie(liste,n,duree=6){
+  for(let i=0;i<n;i++)setTimeout(()=>{
+    const s=document.createElement('span');
+    s.className='chute';
+    s.textContent=liste[Math.floor(rnd(0,liste.length))];
+    s.style.cssText=`left:${rnd(0,100)}vw;font-size:${rnd(14,38)}px;animation-duration:${rnd(duree*.6,duree)}s`;
+    document.body.appendChild(s);
+    setTimeout(()=>s.remove(),duree*1000);
+  },i*(duree*1000/n));
+}
+async function ecrire(msg,pause=1800){
+  const t=$('texte');t.textContent='';t.style.opacity=1;
+  for(const ch of msg){t.textContent+=ch;await dodo(55)}
+  await dodo(pause);t.style.opacity=0;await dodo(900);
+}
+function eclater(el){
+  const r=el.getBoundingClientRect();
+  for(let i=0;i<18;i++){
+    const s=document.createElement('span');
+    s.className='mini';s.textContent=['💖','💗','💕'][i%3];
+    const a=i/18*6.283,d=rnd(80,170);
+    s.style.cssText=`left:${r.left+r.width/2}px;top:${r.top+r.height/2}px;--dx:${Math.cos(a)*d}px;--dy:${Math.sin(a)*d}px`;
+    document.body.appendChild(s);setTimeout(()=>s.remove(),1600);
+  }
+}
+function feu(x,y){const c=cols[Math.floor(rnd(0,5))];for(let i=0;i<46;i++){const a=rnd(0,6.283),v=rnd(1,5);feux.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,vie:1,c});}}
+async function grandFeu(n){for(let i=0;i<n;i++){feu(rnd(W*.15,W*.85),rnd(H*.15,H*.5));await dodo(rnd(300,700));}}
+function monte(liste,n,duree=9){for(let i=0;i<n;i++)setTimeout(()=>{const s=document.createElement('span');s.className='monte';s.textContent=liste[Math.floor(rnd(0,liste.length))];s.style.cssText=`left:${rnd(0,100)}vw;font-size:${rnd(16,34)}px;--dx:${rnd(-60,60)}px;animation-duration:${rnd(duree*.6,duree)}s`;document.body.appendChild(s);setTimeout(()=>s.remove(),duree*1000);},i*(duree*1000/n));}
+addEventListener('pointerdown',e=>{feu(e.clientX,e.clientY);const s=document.createElement('span');s.className='mini';s.textContent='💖';s.style.cssText=`left:${e.clientX}px;top:${e.clientY}px;--dx:0px;--dy:-80px`;document.body.appendChild(s);setTimeout(()=>s.remove(),1600);});
+async function titre(){
+  $('titre').classList.add('on');
+  await dodo(800);
+  $('sous').classList.add('on');
+  await dodo(3500);
+}
+async function cupidon(){
+  $('cupidon').classList.add('on');$('cible').classList.add('on');$('fleche').classList.add('on');
+  await dodo(1800);
+  $('fleche').classList.add('tir');
+  await dodo(1000);
+  $('fleche').classList.remove('on');
+  $('cible').classList.remove('on');
+  eclater($('cible'));
+  await dodo(2200);
+  $('cupidon').classList.remove('on');
+  $('fleche').classList.remove('tir');
+}
+async function coeurTrace(){
+  const sv=$('coeur'),p=$('cp'),pt=$('pt'),L=p.getTotalLength();
+  sv.classList.add('on');
+  const debut=Date.now(),duree=4000;
+  await new Promise(fin=>{
+    (function pas(){
+      const t=Math.min(1,(Date.now()-debut)/duree);
+      p.style.strokeDashoffset=1-t;
+      const q=p.getPointAtLength(t*L);
+      pt.setAttribute('cx',q.x);pt.setAttribute('cy',q.y);
+      t<1?requestAnimationFrame(pas):fin();
+    })();
+  });
+  pt.style.display='none';
+  sv.classList.add('bat');
+  pluie(['💓','💖'],14,5);
+  await dodo(5000);
+  sv.classList.remove('on');
+  await dodo(1200);
+}
+async function lettres(){
+  const z=$('lettres');z.innerHTML='';
+  'ELISCHAMA'.split('').forEach((l,i)=>{
+    const s=document.createElement('span');
+    s.textContent=l;s.className='lettre a'+(i+1);
+    s.style.animationDelay=(i*.8)+'s';
+    z.appendChild(s);
+  });
+  z.classList.add('on');
+  await dodo(9*800+3500);
+  z.style.transition='opacity 2s';z.style.opacity=0;
+  await dodo(2000);
+}
+const POEME=[
+ ["Avant toi, mon ciel n'était qu'un silence sans étoiles,","Un grand soir immobile où le temps n'avait pas de voile.","Puis ton prénom s'est levé, doux comme une aurore,","Et tout ce qui dormait en moi s'est mis à vivre encore."],
+ ["Elischama… neuf lettres, neuf lumières,","Neuf battements de cœur que je murmure en prière.","Chaque syllabe est une porte entrouverte sur le ciel,","Chaque mot de ta voix a le goût du miel."],
+ ["Je ne savais pas qu'un regard pouvait tout changer,","Qu'un sourire pouvait me sauver, me réparer.","Tu es entrée comme la lumière dans une pièce fermée,","Sans bruit, sans effort, et j'ai tout oublié."],
+ ["Si les étoiles savaient combien je pense à toi,","Elles tomberaient du ciel pour se poser sur tes doigts.","Chaque nuit, je leur confie ce que mes lèvres n'osent dire :","Que tu es mon plus beau rêve et mon plus doux soupir."],
+ ["Tu es ma joie des matins, mon rire dans la tempête,","Le refuge où mon cœur peut enfin poser sa tête.","Quand tout devient trop lourd, il me suffit de ton nom,","Et le monde redevient léger, tendre et bon."],
+ ["Tu es belle, mon amour, d'une beauté qui rayonne,","Pas seulement tes yeux : ton âme, ta façon d'être bonne.","Ton sourire est une fête, ta voix est une chanson,","Et chaque jour près de toi est une belle saison."],
+ ["Je t'aime dans le matin, quand le monde se réveille,","Je t'aime dans le soir, quand la lune te ressemble,","Je t'aime dans le silence, et même dans le bruit,","Car partout où tu n'es pas, c'est encore toi que je cherche."],
+ ["Que le vent porte mes mots jusqu'au creux de ton cœur,","Qu'ils te disent ce que je ne sais dire sans peur :","Que je veux marcher près de toi sur tous les chemins,","Te tenir la main fort, de ce soir jusqu'à demain."],
+ ["Nous sommes deux lumières perdues dans l'immensité,","Deux étincelles qui se cherchaient depuis l'éternité.","Et l'univers entier, d'un geste, nous a rapprochés,","Comme s'il avait tout écrit avant de nous créer."],
+ ["Alors regarde, mon amour, ces deux lueurs qui s'élancent,","Elles tracent dans la nuit le signe de l'infini, sans distance.","Ce symbole n'a ni début ni fin, comme mon amour pour toi,","Il tourne, il brille, il dure, il ne s'éteindra pas."],
+ ["Je te promets des fous rires et des matins dorés,","Des mains qui se retrouvent, des cœurs qui se comprennent sans parler.","Je te promets ma douceur, ma patience, ma fidélité,","Et un amour qui, chaque jour, ne fait que grandir."],
+ ["Tu mérites tous les bonheurs que la vie peut offrir,","Des jours sans larmes, des nuits remplies de beaux rires.","Si je pouvais cueillir le ciel pour en faire un bouquet,","Je le poserais à tes pieds, sans rien te demander."],
+ ["Merci d'exister, merci d'être celle que tu es,","Merci pour ta lumière, ta tendresse, ta bonté.","Le monde est plus doux depuis que tu en fais partie,","Et mon cœur te dit, tout bas : merci d'être ma vie."],
+ ["Les étoiles filantes passent : fais un vœu, mon trésor.","Le mien est simple et sûr : te garder, toi, encore et encore.","Et si le ciel m'offrait mille vœux, un par un,","Je ne répéterais que ton nom, jusqu'au matin."],
+ ["Et c'est peut-être à cet instant que mon cœur a choisi le tien.","Elischama… tu es mon univers, mon présent, mon demain,","Et mon amour pour toi n'aura jamais de fin. ∞"]
+];
+async function univers(){
+  document.body.classList.add('univers');
+  const g=setInterval(()=>{galaxieA=Math.min(1,galaxieA+.01);if(galaxieA>=1)clearInterval(g)},60);
+  filantesOn=true;
+  monte(['💖','✨','💕'],30,10);
+  setTimeout(()=>$('infini').classList.add('trace'),7500);
+  const zone=$('poeme');
+  await dodo(2500);
+  for(let i=0;i<POEME.length;i++){
+    zone.classList.remove('sortie');zone.innerHTML='';
+    const derniere=i===POEME.length-1;
+    if(i%3===1)monte(['💖','✨','💕','🌸'],18,9);
+    if(i===POEME.length-2||derniere)grandFeu(5);
+    for(let j=0;j<POEME[i].length;j++){
+      const p=document.createElement('p');
+      p.textContent=POEME[i][j];
+      if(derniere&&j===0)p.classList.add('fin');
+      zone.appendChild(p);
+      await dodo(60);p.classList.add('on');
+      await dodo(2600);
+    }
+    if(derniere)break;
+    await dodo(3200);
+    zone.classList.add('sortie');
+    await dodo(1600);
+  }
+  await dodo(9000);
+}
+async function demarrer(){
+  pluie(['🌸','✨','🌹'],24,12);
+  await dodo(1500);
+  await ecrire("Il y a des rencontres que l'on n'oublie jamais…");
+  await ecrire("Certaines personnes arrivent dans nos vies comme une lumière.");
+  await ecrire("Et toi, tu as rendu mes jours plus doux sans même le savoir…");
+  await titre();
+  pluie(['❤️','💖','💕','💗','💓'],45,8);
+  await ecrire("Et soudain, tout devient plus beau.");
+  await ecrire("Même les jours gris ont la couleur de ton sourire.");
+  await ecrire("Mon cœur ne bat plus tout à fait de la même façon…");
+  await ecrire("Je voulais te dire quelque chose de simple : tu comptes énormément pour moi.");
+  await ecrire("Quelqu'un a visé en plein dans le mille…");
+  await cupidon();
+  await ecrire("Il m'a murmuré un prénom…");
+  await coeurTrace();
+  await ecrire("Ce cœur-là, c'est le mien… et il t'appartient.");
+  await ecrire("Un prénom que je ne cesse de répéter…");
+  await ecrire("Alors laisse-moi l'écrire dans le ciel…");
+  await lettres();
+  grandFeu(5);
+  await univers();
+  location.reload();
+}
+let dejaVu=false;try{dejaVu=sessionStorage.getItem('go')==='1'}catch(e){}
+if(dejaVu){$('accueil').remove();demarrer();}
+else{
+  monte(['💖','💕','✨'],14,10);
+  $('go').onclick=()=>{
+    try{sessionStorage.setItem('go','1')}catch(e){}
+    $('accueil').classList.add('off');
+    monte(['💖','💕','✨'],20,8);
+    setTimeout(demarrer,1200);
+    setTimeout(()=>$('accueil').remove(),1700);
+  };
+}
+</script>
+</body>
+</html>
